@@ -1,5 +1,7 @@
 import pygame
 import Vector
+import Constants
+from Vector import Vector
 
 class Player(object):
     def __init__(self, position, velocity, size, color):
@@ -12,7 +14,16 @@ class Player(object):
         pRect = pygame.draw.rect(screen, self.color,  [self.position.x, self.position.y, self.size, self.size], 0)
         pygame.display.update(pRect)
         pygame.display.update(pygame.draw.line(screen, (0, 0, 255), pRect.center, (pRect.centerx + self.velocity.x * self.size, pRect.centery + self.velocity.y * self.size), 3))        
-    
+        
+        eRect = pygame.draw.rect(screen, ((0, 255, 0)),  [100, 100, self.size, self.size], 0)
+        pygame.display.update(eRect)
+        
+        if (pRect.colliderect(eRect)):
+            self.color = ((50, 50, 50))
+        else:
+            self.color = (0, 255, 0)
+
+        
     def playerMove(self, pressedKey):
         if pressedKey[pygame.K_w]:
             self.velocity.y = -1
@@ -31,4 +42,5 @@ class Player(object):
 
         self.position += self.velocity
 
+            
 
