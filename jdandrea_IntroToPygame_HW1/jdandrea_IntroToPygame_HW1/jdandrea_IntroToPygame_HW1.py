@@ -13,10 +13,10 @@ screen = pygame.display.set_mode((Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT)
 done = False
 
 playerPosition = Vector((Constants.WORLD_WIDTH / 2), (Constants.WORLD_HEIGHT / 2))
-player = Player(playerPosition, Constants.PLAYER_SIZE, Constants.PLAYER_SPEED)
+player = Player(playerPosition, Constants.PLAYER_SIZE, Constants.PLAYER_SPEED, Constants.PLAYER_COLOR)
 
 enemyPosition = Vector(100, 100)
-enemy = Enemy(enemyPosition, Constants.ENEMY_SPEED, Constants.ENEMY_SIZE)
+enemy = Enemy(enemyPosition, Constants.ENEMY_SIZE, Constants.ENEMY_SPEED, Constants.ENEMY_COLOR)
 
 # frame rate object
 fps = pygame.time.Clock()
@@ -35,7 +35,7 @@ while not done:
         player.draw(screen)       
         player.update(pygame.key.get_pressed())
 
-        enemy.draw(screen)
+        enemy.draw(screen, player)
         enemy.update(player)
 
 
