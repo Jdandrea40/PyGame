@@ -10,6 +10,7 @@ class Player(Agent):
         super().__init__(position, size, speed, color)
 
     def draw(self, screen):
+
         super().draw(screen)
         #eRect = pygame.draw.rect(screen, ((0, 255, 0)),  [100, 100, self.size, self.size], 0)
         #pygame.display.update(eRect)
@@ -21,23 +22,7 @@ class Player(Agent):
 
         
     def update(self, pressedKey):
-        
-
-        if pressedKey[pygame.K_w]:
-            self.velocity.y = -1
-        elif pressedKey[pygame.K_s]:
-            self.velocity.y = 1
-        else:
-            self.velocity.y = 0
-
-        if pressedKey[pygame.K_a]:
-            self.velocity.x = -1
-        elif pressedKey[pygame.K_d]:
-            self.velocity.x = 1
-        else:
-            self.velocity.x = 0
-        self.velocity = self.velocity.normalize()
-        super().updatePlayer()
+        super().updatePlayer(pressedKey)
         #self.velocity.__str__()
         #self.position.__str__()            
 
