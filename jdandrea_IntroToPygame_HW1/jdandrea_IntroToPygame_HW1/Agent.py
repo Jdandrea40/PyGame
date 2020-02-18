@@ -12,8 +12,10 @@ class Agent(object):
         self.size = size
         self.color = color
         self.velocity = Vector(0, 0)
-        self.lineColor = Constants.LINE_COLOR        
+        self.lineColor = Constants.LINE_COLOR 
+        self.currentTime = pygame.time.get_ticks()
         
+
     def draw(self, screen):
         self.rect = pygame.Rect(self.position.x, self.position.y, self.size, self.size)
         myRect = pygame.draw.rect(screen, self.color, self.rect)
@@ -23,25 +25,30 @@ class Agent(object):
         pygame.display.update(myLine)        
         pygame.display.update(myRect)
      
-    def collisionCheck(self, player):        
-        return self.rect.colliderect(player)            
+    def collisionCheck(self, player):  
+        self.currentTime = pygame.time.get_ticks()
+
+        if(self.currentTime > self.currentTime + Constants.ENEMY_NO_TAG_BACK):        
+            return self.rect.colliderect(player)            
     
     def updatePlayer(self):                     
-        if(self.position.y <= 0 or self.position.y >= Constants.WORLD_HEIGHT):
-            self.position.y = self.position.y
-            self.position.x += (self.velocity.x * self.speed)
-        elif(self.position.x <= 0 or self.position.x >= Constants.WORLD_WIDTH):
-            self.position.x = self.position.x
-            self.position.y +=(self.velocity.y * self.speed)
-        else:
-            self.position +=(self.velocity * self.speed)
-        
-        
-        #self.velocity.__str__()
-        #self.position.__str__()  
+        if(self.position.y + (self.velocity.y * self.speed) <= 0 or self.position.y + (self.velocity.y * self.speed) > float(Constants.WORLD_HEIGHT - Constants.PLAYER_SIZE)):
+            self.velocity = Vector(self.velocity.x, 0)            
+        if(self.position.x + (self.velocity.x * self.speed) <= 0 or self.position.x + (self.velocity.x * self.speed) > float(Constants.WORLD_WIDTH - Constants.PLAYER_SIZE)):
+            self.velocity = Vector(0, self.velocity.y)
 
-    def updateEnemy(self, player):             
-        self.position += self.velocity * self.speed
+        self.position +=(self.velocity * self.speed)
+
+
+    def updateEnemy(self, player):
+
+        if(self.position.y + (self.velocity.y * self.speed) <= 0 or self.position.y + (self.velocity.y * self.speed) > float(Constants.WORLD_HEIGHT - Constants.ENEMY_SIZE)):
+            self.velocity = Vector(self.velocity.x, 0)  
+        if(self.position.x + (self.velocity.x * self.speed) <= 0 or self.position.x + (self.velocity.x * self.speed) > float(Constants.WORLD_WIDTH - Constants.ENEMY_SIZE)):
+            self.velocity = Vector(0, self.velocity.y)
+
+        self.position +=(self.velocity * self.speed)
+
 
 
 

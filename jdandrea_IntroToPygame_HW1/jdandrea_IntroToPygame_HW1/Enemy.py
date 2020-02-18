@@ -10,6 +10,9 @@ class Enemy(Agent):
         super().__init__(position, size, speed, color)
         self.iT = True
         self.chasing = False
+
+        self.yourIT = pygame.time.get_ticks()
+        
     
     def __str__(self):
         super().__str__()
@@ -49,12 +52,13 @@ class Enemy(Agent):
                 self.velocity = Vector(0,0)
                 self.lineColor = Constants.LINE_COLOR
                 self.chasing = False
-        
-        if (super().collisionCheck(player)):
-            if (self.iT == True):
-                self.iT = False
-                self.chasing = False
-            else:
-                self.iT = True
+
+            
+            if (super().collisionCheck(player)):
+                if (self.iT == True):
+                    self.iT = False
+                    self.chasing = False
+                else:
+                    self.iT = True
                 
 
