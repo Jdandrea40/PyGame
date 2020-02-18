@@ -1,5 +1,6 @@
 import pygame
 import Constants
+import random
 
 from Vector import Vector
 from Player import Player
@@ -13,11 +14,14 @@ done = False
 playerPosition = Vector((Constants.WORLD_WIDTH / 2), (Constants.WORLD_HEIGHT / 2))
 player = Player(playerPosition, Constants.PLAYER_SIZE, Constants.PLAYER_SPEED, Constants.PLAYER_COLOR)
 
-enemyPosition = Vector(100, 100)
-enemy = Enemy(enemyPosition, Constants.ENEMY_SIZE, Constants.ENEMY_SPEED, Constants.ENEMY_COLOR)
+#enemy = Enemy(enemyPosition, Constants.ENEMY_SIZE, Constants.ENEMY_SPEED, Constants.ENEMY_COLOR)
+enemies = []
 
-enemyHunterPos = Vector(300, 300)
-enemyHunter = EnemyHunter(enemyHunterPos, Constants.ENEMY_SIZE, Constants.ENEMY_SPEED, Constants.ENEMY_HUNTER_COLOR)
+enemyHunters = []
+#enemyHunter = EnemyHunter(enemyHunterPos, Constants.ENEMY_SIZE, Constants.ENEMY_SPEED, Constants.ENEMY_HUNTER_COLOR)
+for x in range(0,10):    
+    enemyHunters.append(EnemyHunter(Vector(random.randrange(Constants.WORLD_WIDTH),random.randrange(Constants.WORLD_HEIGHT)), Constants.ENEMY_SIZE, Constants.ENEMY_SPEED, Constants.ENEMY_HUNTER_COLOR))
+    enemies.append(Enemy(Vector(random.randrange(Constants.WORLD_WIDTH),random.randrange(Constants.WORLD_HEIGHT)), Constants.ENEMY_SIZE, Constants.ENEMY_SPEED, Constants.ENEMY_COLOR))
 
 # frame rate object
 fps = pygame.time.Clock()
@@ -28,21 +32,19 @@ while not done:
                         done = True
         pygame.display.flip()
 
-        # sets the framerate
         fps.tick(Constants.FRAME_RATE)
-        # redraws the screen (stops the "paint" feature)
         screen.fill(Constants.BACKGROUND_COLOR)
-        
         player.draw(screen)       
         player.update(pygame.key.get_pressed())
 
-        enemy.draw(screen, player)
-        enemy.update(player)
+        
+        for x in enemies:
+            x.draw(screen, player)
+            x.update(player)
 
-        enemyHunter.draw(screen, player)
-        enemyHunter.update(player)
-
-
+        for x in enemyHunters:
+            x.draw(screen, player)
+            x.update(player)
         
             
         
