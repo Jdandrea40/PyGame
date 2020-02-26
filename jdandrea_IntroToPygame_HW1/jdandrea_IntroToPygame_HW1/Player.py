@@ -5,8 +5,9 @@ from Agent import Agent
 from Vector import Vector
 
 class Player(Agent):
-    def __init__(self, position, size, speed, color):
-        super().__init__(position, size, speed, color)
+    def __init__(self, position, size, speed):
+        super().__init__(position, size, speed)
+        self.color = Constants.PLAYER_COLOR
 
     def draw(self, screen):
         super().draw(screen)

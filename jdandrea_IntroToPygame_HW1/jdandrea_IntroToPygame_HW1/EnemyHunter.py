@@ -13,10 +13,10 @@ class EnemyHunter(Enemy):
     def draw(self, screen, player):         
         self.vectToPlayer = player.position - self.position
         self.distToPlayer = self.vectToPlayer.length()
-        self.timeToPlaya = self.distToPlayer / self.speed
+        self.timeToPlaya = self.distToPlayer / self.currentSpeed
         self.playaPosition = player.position + (player.velocity * self.timeToPlaya)
         
-        if (self.attacking == True):
+        if (self.followingPlayer == True):
             super().drawToPoint(screen, self.playaPosition)
         else:
             super().draw(screen, player)
