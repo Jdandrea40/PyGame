@@ -24,12 +24,15 @@ class Dog(Agent):
             if pressedKey[pygame.K_d]:
                 self.velocity.x = 1
                 self.currentSpeed = self.maxSpeed
+            # used to set the speed to 0 so that the velocity is not 0
+            # if vel = 0, sprite will snap to its start position direction
             elif not pressedKey[pygame.K_w] and not pressedKey[pygame.K_s] and not pressedKey[pygame.K_a]:
                 self.currentSpeed = 0
 
         self.updateVelocity(self.velocity)
         super().update()
 
+    # draws the dog and its velocity line
     def draw(self, screen):
         screen.blit(self.image, [self.position.x, self.position.y])
         super().draw(screen)

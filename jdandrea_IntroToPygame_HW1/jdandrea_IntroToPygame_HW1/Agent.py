@@ -6,7 +6,8 @@ import math
 from Vector import Vector
 
 class Agent(object):
-
+    "An agent class that is parented to moveable game objects"\
+    # Object stat initializer
     def __init__(self, position, size, speed, image):
         self.position = position
         self.currentSpeed = 1
@@ -28,15 +29,20 @@ class Agent(object):
         self.boundingBox = True
 
 
+    # Draws the bounding box around the child
     def draw(self, screen):
         if (self.boundingBox == True):
             boundingRect = pygame.draw.rect(screen, [0,0,255], self.rect, 3)
             pygame.display.update(boundingRect)
-
+    
+    # updates the rotation of the sprite
     def updateAngle(self):
+        # converts the radians into degrees and corrects the offset (90 degrees)
         self.angle = math.degrees(math.atan2(-self.velocity.y, self.velocity.x)) - 90
         self.image = pygame.transform.rotate(self.imageOG, self.angle)  
-        
+      
+    # gets the number 1 - 0 to toggle Lines and Forces
+    # not the best way to handle but certainly an easy way to do it
     def updateLineDraws(self, key):
         if key is not None:
             if (key[pygame.K_1]):
@@ -87,18 +93,21 @@ class Agent(object):
         self.updateCenter()
         self.updateAngle()
         
-        
+    # used for proper rotation by getting the bounding rect  
     def updateRect(self):
         self.rect = self.image.get_bounding_rect()
-            
+        
+    # updates the center while rotating
     def updateCenter(self):
         self.center = Vector(self.position.x + (self.size.x / 2), self.position.y + (self.size.y/ 2))
         self.rect = self.rect.move(self.center.x - self.size.x / 2, self.center.y - self.size.y / 2)
         self.center = Vector(self.rect.centerx, self.rect.centery)
     
+    # child velocity normalization
     def updateVelocity(self, velocity):
          self.velocity = velocity.normalize()
     
+    # checks for collision
     def isInCollision(self, agent):
         if (self.rect.colliderrect(agent.rect)):
             return True
