@@ -6,14 +6,13 @@ from Vector import Vector
 
 class Dog(Agent):
     def update(self, pressedKey):
-        
         if (pressedKey is not None):
             # player movement
             if pressedKey[pygame.K_w]:
                 self.velocity.y = -1
                 self.currentSpeed = self.maxSpeed
                 
-            elif pressedKey[pygame.K_s]:
+            if pressedKey[pygame.K_s]:
                 self.velocity.y = 1
                 self.currentSpeed = self.maxSpeed
                 
@@ -22,19 +21,20 @@ class Dog(Agent):
                 self.velocity.x = -1
                 self.currentSpeed = self.maxSpeed
                 
-            elif pressedKey[pygame.K_d]:
+            if pressedKey[pygame.K_d]:
                 self.velocity.x = 1
                 self.currentSpeed = self.maxSpeed
-                
-        else:
-            self.currentSpeed = 0
+            elif not pressedKey[pygame.K_w] and not pressedKey[pygame.K_s] and not pressedKey[pygame.K_a]:
+                self.currentSpeed = 0
 
-        self.updateVelocity(Vector(self.velocity.x, self.velocity.y))
+        self.updateVelocity(self.velocity)
         super().update()
 
     def draw(self, screen):
         screen.blit(self.image, [self.position.x, self.position.y])
-
+        super().draw(screen)
         if (self.dogForceLine == True):
-            super().draw(screen)
+            myLine = pygame.draw.line(screen, Constants.LINE_COLOR, (self.center.x, self.center.y), (self.center.x + self.velocity.x * self.size.x, self.center.y + self.velocity.y * self.size.y), 3)
+            pygame.display.update(myLine)
+            
 
