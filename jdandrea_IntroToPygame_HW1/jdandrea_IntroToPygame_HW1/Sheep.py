@@ -7,9 +7,9 @@ from Agent import Agent
 
 class Sheep(Agent):
     "A sheep class that handles hearding behavior"
-    def __init__(self, position, size, speed, image):
+    def __init__(self, image, position, size, color, speed, angularSpeed):
         # initializes all Sheep stats
-        super().__init__(position, size, speed, image)
+        super().__init__(image, position, size, color, speed, angularSpeed)
         self.followingPlayer = False
         self.target = Vector(0,0)
         self.lineToTarg = None
@@ -53,15 +53,15 @@ class Sheep(Agent):
         self.target = target.center
 
     # the main update method of the sheep
-    def update(self, target):
+    def update(self, bounds, graph, dog, herd, gates):
         # initialize the starting force to 0
         self.forces = Vector(0,0)
-        self.calcTrackingVelocity(target)
+        self.calcTrackingVelocity(dog)
 
         # gets the vector to the dog and uses it to check its closeness
-        vectToPlayer = target.position - self.position
+        vectToPlayer = dog.position - self.position
 
-        if (self.isPlayerClose(target) == True):
+        if (self.isPlayerClose(dog) == True):
             self.dog = vectToPlayer * -1
         else:
             self.dog = Vector(0,0)
@@ -82,29 +82,29 @@ class Sheep(Agent):
             self.sheepCohesion(totalNeighbors)
             self.sheepSeparation(totalNeighbors)
 
-        if (self.position - Vector(0,self.position.y)).length() < Constants.BOUNDS_DIST:
+        if (self.position - Vector(0,self.position.y)).length() < Constants.SHEEP_BOUNDARY_RADIUS:
             self.bounds.x = 1
-        elif (Vector(Constants.WORLD_WIDTH, self.position.y) - Vector(self.position.x + self.rect.w, self.position.y)).length() < Constants.BOUNDS_DIST:
+        elif (Vector(Constants.WORLD_WIDTH, self.position.y) - Vector(self.position.x + self.rect.w, self.position.y)).length() < Constants.SHEEP_BOUNDARY_RADIUS:
             self.bounds.x = -1
         else:
             self.bounds.x = 0
-        if (self.position - Vector(self.position.x,0)).length() < Constants.BOUNDS_DIST:
+        if (self.position - Vector(self.position.x,0)).length() < Constants.SHEEP_BOUNDARY_RADIUS:
             self.bounds.y = 1
-        elif (Vector(self.position.x,Constants.WORLD_HEIGHT) - Vector(self.position.x, self.position.y + self.rect.h)).length() < Constants.BOUNDS_DIST:
+        elif (Vector(self.position.x,Constants.WORLD_HEIGHT) - Vector(self.position.x, self.position.y + self.rect.h)).length() < Constants.SHEEP_BOUNDARY_RADIUS:
             self.bounds.y = -1
         else:
             self.bounds.y = 0
         self.bounds = self.bounds.normalize()
 
-        self.forces += self.alignment * Constants.ALIGNMENT_FORCE \
-            + self.cohesion * Constants.COHESION_FORCE \
-                + self.separation * Constants.SEPARATION_FORCE \
-                    + self.bounds * Constants.BOUNDARY_FORCE \
-                        + self.dog * Constants.DOG_FORCE
+        self.forces += self.alignment * Constants.SHEEP_ALIGNMENT_WEIGHT \
+            + self.cohesion * Constants.SHEEP_COHESION_WEIGHT \
+                + self.separation * Constants.SHEEP_SEPARATION_WEIGHT \
+                    + self.bounds * Constants.SHEEP_BOUNDARY_RADIUS \
+                        + self.dog * Constants.SHEEP_DOG_INFLUENCE_WEIGHT
         
 
         self.updateVelocity(self.forces)
-        super().update()
+        super().update(bounds, graph, herd, gates)
 
     def sheepAlignment(self, totNeighs):
         # SHEEP ALIGNMENT
@@ -162,7 +162,7 @@ class Sheep(Agent):
             if sheep is not self:
                 sheepVect = sheep.position - self.position
                 # checks the sheeps distance to determine if the are neighbors
-                if (sheepVect.length() < Constants.NEIGHBOR_DIST):
+                if (sheepVect.length() < Constants.SHEEP_NEIGHBOR_RADIUS):
                     self.neighbors.append(sheep)
                     
 

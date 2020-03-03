@@ -17,15 +17,15 @@ done = False
 # dog image loading and creation
 dogImage = pygame.image.load("collie.png")
 dogPosition = Vector((Constants.WORLD_WIDTH / 2), (Constants.WORLD_HEIGHT / 2))
-dog = Dog(dogPosition,Vector(Constants.DOG_WIDTH, Constants.DOG_HEIGHT), Constants.PLAYER_SPEED, dogImage)
+dog = Dog(dogPosition,Vector(Constants.DOG_WIDTH, Constants.DOG_HEIGHT), Constants.DOG_SPEED, dogImage)
 
 # sheep image loading
 sheepImage = pygame.image.load("sheep.png")
 herdOfSheep = []
 
 # creates 100 sheep
-for x in range(0,100):    
-    herdOfSheep.append(Sheep(Vector(random.randrange(Constants.WORLD_WIDTH),random.randrange(Constants.WORLD_HEIGHT)), Vector(Constants.SHEEP_WIDTH, Constants.SHEEP_HEIGHT), Constants.ENEMY_SPEED, sheepImage))
+for x in range(0,25):    
+    herdOfSheep.append(Sheep(Vector(random.randrange(Constants.WORLD_WIDTH),random.randrange(Constants.WORLD_HEIGHT)), Vector(Constants.SHEEP_WIDTH, Constants.SHEEP_HEIGHT), Constants.SHEEP_SPEED, sheepImage))
 
 # frame rate object
 fps = pygame.time.Clock()

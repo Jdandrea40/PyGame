@@ -5,6 +5,10 @@ from Agent import Agent
 from Vector import Vector
 
 class Dog(Agent):
+    def update(self, bounds, graph, herd, gates):
+        super().update
+    
+    """
     def update(self, pressedKey):
         if (pressedKey is not None):
             # player movement
@@ -31,6 +35,7 @@ class Dog(Agent):
 
         self.updateVelocity(self.velocity)
         super().update()
+        """
 
     # draws the dog and its velocity line
     def draw(self, screen):

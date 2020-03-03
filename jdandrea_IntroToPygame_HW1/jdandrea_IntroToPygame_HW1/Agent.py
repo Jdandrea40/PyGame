@@ -8,7 +8,7 @@ from Vector import Vector
 class Agent(object):
     "An agent class that is parented to moveable game objects"\
     # Object stat initializer
-    def __init__(self, position, size, speed, image):
+    def __init__(self, image, position, size, color, speed, angularSpeed):
         self.position = position
         self.currentSpeed = 1
         self.maxSpeed = speed
@@ -17,6 +17,7 @@ class Agent(object):
         self.imageOG = image
         self.velocity = Vector(0, 0)
         self.target = Vector(0,0)
+
         self.updateRect()
         self.updateCenter()
         self.updateAngle()
@@ -56,32 +57,32 @@ class Agent(object):
             if (key[pygame.K_5]):
                 self.boundingBox = not self.boundingBox
             if (key[pygame.K_6]):
-                if(Constants.DOG_FORCE > 0):
-                    Constants.DOG_FORCE = 0
+                if(Constants.SHEEP_DOG_INFLUENCE_WEIGHT > 0):
+                    Constants.SHEEP_DOG_INFLUENCE_WEIGHT = 0
                 else:
-                    Constants.DOG_FORCE = 1
+                    Constants.SHEEP_DOG_INFLUENCE_WEIGHT = 0.3
             if (key[pygame.K_7]):
-                if (Constants.ALIGNMENT_FORCE > 0):
-                    Constants.ALIGNMENT_FORCE = 0
+                if (Constants.SHEEP_ALIGNMENT_WEIGHT > 0):
+                    Constants.SHEEP_ALIGNMENT_WEIGHT = 0
                 else:
-                    Constants.ALIGNMENT_FORCE = 1
+                    Constants.SHEEP_ALIGNMENT_WEIGHT = 0.3
             if (key[pygame.K_8]):
-               if (Constants.SEPARATION_FORCE > 0):
-                    Constants.SEPARATION_FORCE = 0
+               if (Constants.SHEEP_SEPARATION_WEIGHT > 0):
+                    Constants.SHEEP_SEPARATION_WEIGHT = 0
                else:
-                    Constants.SEPARATION_FORCE = .8
+                    Constants.SHEEP_SEPARATION_WEIGHT = .325
             if (key[pygame.K_9]):
-                if (Constants.COHESION_FORCE > 0):
-                    Constants.COHESION_FORCE = 0
+                if (Constants.SHEEP_COHESION_WEIGHT > 0):
+                    Constants.SHEEP_COHESION_WEIGHT = 0
                 else:
-                    Constants.COHESION_FORCE = .8
+                    Constants.SHEEP_COHESION_WEIGHT = .3
             if (key[pygame.K_0]):
-                if (Constants.BOUNDARY_FORCE > 0):
-                    Constants.BOUNDARY_FORCE = 0
+                if (Constants.SHEEP_BOUNDARY_INFLUENCE_WEIGHT > 0):
+                    Constants.SHEEP_BOUNDARY_INFLUENCE_WEIGHT = 0
                 else:
-                   Constants.BOUNDARY_FORCE = 1.2
+                   Constants.SHEEP_BOUNDARY_INFLUENCE_WEIGHT = .5
 
-    def update(self):
+    def update(self, bounds, graph, herd, gates):
         # SCREEN BOUNDS
         if(self.position.y + (self.velocity.y * self.currentSpeed) <= 0 or self.position.y + (self.velocity.y * self.currentSpeed) > float(Constants.WORLD_HEIGHT - self.size.y)):
             self.velocity = Vector(self.velocity.x, 0)            

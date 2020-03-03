@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>64e8e5f1-225a-4dff-a6ef-9438fa5595d7</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>jdandrea_IntroToPygame_HW1.py</StartupFile>
+    <StartupFile>main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -24,22 +24,21 @@
     <Compile Include="Agent.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DanaConstants.py" />
     <Compile Include="Dog.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DrawableObject.py" />
+    <Compile Include="Graph.py" />
+    <Compile Include="main.py" />
+    <Compile Include="Node.py" />
     <Compile Include="Sheep.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Constants.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Enemy.py">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="EnemyHunter.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Player.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="jdandrea_IntroToPygame_HW1.py" />
