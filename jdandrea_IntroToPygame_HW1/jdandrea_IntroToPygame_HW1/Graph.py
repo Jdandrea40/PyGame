@@ -189,17 +189,16 @@ class Graph():
 			if (currentNode == end):
 				return self.buildPath(end)
 			for nextNode in currentNode.neighbors:
-				currDistance = (nextNode.center - currentNode.center).length()
+				currDistance = (nextNode.center - end.center).length()
 				if (nextNode.isVisited == False):
 					nextNode.isVisited = True
+					toVisit.append(nextNode)
 					nextNode.costToEnd = (end.center + nextNode.center).length()
 					nextNode.backNode = currentNode
-					toVisit.append(nextNode)
-					toVisit = sorted(toVisit, key=lambda node: node.cost)
-
+					toVisit = sorted(toVisit, key=lambda node: node.costToEnd)
 				else:
-					if (currDistance + currentNode.cost < nextNode.cost):
-						nextNode.cost = currDistance + currentNode.cost
+					if (currDistance + currentNode.costToEnd < nextNode.costToEnd):
+						nextNode.cost = currDistance + currentNode.costToEnd
 						nextNode.backNode = currentNode	
 		return []
 
