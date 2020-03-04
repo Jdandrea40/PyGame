@@ -8,20 +8,39 @@ class Agent(object):
 
     def __init__(self, position, size, speed, color):
         self.position = position
+<<<<<<< Updated upstream
         self.speed = speed
         self.size = size
         self.color = color
         self.ogColor = self.color
+=======
+        self.currentSpeed = speed
+        self.maxSpeed = speed
+        self.size = Vector(size.x, size.y)
+        self.image = image  
+        self.imageOG = image
+        self.velocity = Vector(0, 0)
+        self.target = Vector(0,0)
+>>>>>>> Stashed changes
 
         self.centerX = (self.position.x + self.size) / 2 
         self.centerY = (self.position.y + self.size) / 2
         self.center = Vector(self.centerX, self.centerY)
 
+<<<<<<< Updated upstream
         self.velocity = Vector(0, 0)
         self.lineColor = Constants.LINE_COLOR 
 
         self.time = 0.0
         self.flashTime = 0.0        
+=======
+        # Used for line drawing
+        self.sheepVelLine = False
+        self.dogForceLine = False
+        self.boundForceLine = False
+        self.neighborLine = False
+        self.boundingBox = False
+>>>>>>> Stashed changes
 
     def draw(self, screen):
         self.rect = pygame.Rect(self.position.x, self.position.y, self.size, self.size)
