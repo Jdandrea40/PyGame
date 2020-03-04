@@ -177,29 +177,24 @@ class Graph():
 		self.reset()
 
 		# TODO: Add your Best-first code here!
+		toVisit = []
 		start.isVisited = True
 		start.costToEnd = (end.center - start.center).length()
-		toVisit = []
 		toVisit.append(start)
 
 		while (len(toVisit) > 0):
+			toVisit = sorted(toVisit, key=lambda node: node.costToEnd)
 			currentNode = toVisit[0]
-			currentNode.isExplored = True
 			toVisit.pop(0)
 			if (currentNode == end):
 				return self.buildPath(end)
 			for nextNode in currentNode.neighbors:
-				currDistance = (nextNode.center - end.center).length()
 				if (nextNode.isVisited == False):
 					nextNode.isVisited = True
-					toVisit.append(nextNode)
-					nextNode.costToEnd = (end.center + nextNode.center).length()
+					nextNode.costToEnd = (end.center - nextNode.center).length()
 					nextNode.backNode = currentNode
-					toVisit = sorted(toVisit, key=lambda node: node.costToEnd)
-				else:
-					if (currDistance + currentNode.costToEnd < nextNode.costToEnd):
-						nextNode.cost = currDistance + currentNode.costToEnd
-						nextNode.backNode = currentNode	
+					toVisit.append(nextNode)
+				currentNode.isExplored = True
 		return []
 
 	def draw(self, screen):
