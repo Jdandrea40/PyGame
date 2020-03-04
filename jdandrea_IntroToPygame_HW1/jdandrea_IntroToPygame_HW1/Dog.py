@@ -24,7 +24,7 @@ class Dog(Agent):
                     sheepToChase = sheep
 
             if (runSearchKey[pygame.K_a]):
-                print("A*")
+                self.pathToSheep = graph.findPath_AStar(graph.getNodeFromPoint(self.center), graph.getNodeFromPoint(sheepToChase.center))
             elif (runSearchKey[pygame.K_s]):
                 self.pathToSheep = graph.findPath_BestFirst(graph.getNodeFromPoint(self.center), graph.getNodeFromPoint(sheepToChase.center))
             elif (runSearchKey[pygame.K_d]):

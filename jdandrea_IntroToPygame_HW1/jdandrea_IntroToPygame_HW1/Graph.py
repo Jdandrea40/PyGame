@@ -168,6 +168,34 @@ class Graph():
 		self.reset()
 
 		# TODO: Add your A-star code here!
+		toVisit = []
+		start.isVisited = True
+		start.costToEnd = (end.center - start.center).length()
+		start.costFromStart = 0
+		start.cost = 0
+		toVisit.append(start)
+
+		while(len(toVisit) > 0):
+			currentNode = toVisit[0]
+			toVisit.pop(0)
+			if  (currentNode  == end):
+				return self.buildPath(end)
+			for nextNode in currentNode.neighbors:
+				toVisit  = sorted(toVisit, key=lambda node: node.cost)
+				startCost = currentNode.costFromStart + (nextNode.center - currentNode.center).length()
+				endCost = (end.center - nextNode.center).length()
+				if (nextNode.isVisited == False):
+					nextNode.isVisited = True
+					nextNode.backNode = currentNode
+					nextNode.costFromStart = startCost
+					nextNode.costToEnd = endCost
+					nextNode.cost = startCost + endCost
+					toVisit.append(nextNode)
+				elif (startCost < nextNode.costFromStart):
+					nextNode.backNode = currentNode
+					nextNode.costFromStart = startCost
+					nextNode.costToEnd = endCost
+					nextNode.cost = startCost + endCost
 
 		return []
 
