@@ -5,37 +5,43 @@ from Agent import Agent
 from Vector import Vector
 
 class Dog(Agent):
+    def __init__(self, image, position, size, color, speed, angularSpeed):
+        super().__init__(image, position, size, color, speed, angularSpeed)
+        self.isSearching = False
+        self.sheepToChase = 100
+        self.pathToSheep = []
+
     def update(self, bounds, graph, herd, gates):
-        super().update
-    
-    """
-    def update(self, pressedKey):
-        if (pressedKey is not None):
-            # player movement
-            if pressedKey[pygame.K_w]:
-                self.velocity.y = -1
-                self.currentSpeed = self.maxSpeed
-                
-            if pressedKey[pygame.K_s]:
-                self.velocity.y = 1
-                self.currentSpeed = self.maxSpeed
-                
+        super().update(bounds, graph, herd, gates)
+        runSearchKey = pygame.key.get_pressed()
+        if (self.isSearching == False):
 
-            if pressedKey[pygame.K_a]:
-                self.velocity.x = -1
-                self.currentSpeed = self.maxSpeed
-                
-            if pressedKey[pygame.K_d]:
-                self.velocity.x = 1
-                self.currentSpeed = self.maxSpeed
-            # used to set the speed to 0 so that the velocity is not 0
-            # if vel = 0, sprite will snap to its start position direction
-            elif not pressedKey[pygame.K_w] and not pressedKey[pygame.K_s] and not pressedKey[pygame.K_a]:
-                self.currentSpeed = 0
+            self.isSearching = True
+            closestSheepDist = 1000
+            for sheep in herd:
+                distanceToSheep = sheep.center - self.center
+                if (distanceToSheep.length() < closestSheepDist):
+                    sheepToChase = sheep
 
-        self.updateVelocity(self.velocity)
-        super().update()
-        """
+            if (runSearchKey[pygame.K_a]):
+                print("A*")
+            elif (runSearchKey[pygame.K_s]):
+                self.pathToSheep = graph.findPath_BestFirst(graph.getNodeFromPoint(self.center), graph.getNodeFromPoint(sheepToChase.center))
+            elif (runSearchKey[pygame.K_d]):
+                self.pathToSheep = graph.findPath_Djikstra(graph.getNodeFromPoint(self.center), graph.getNodeFromPoint(sheepToChase.center))
+            elif (runSearchKey[pygame.K_f]):
+                self.pathToSheep = graph.findPath_Breadth(graph.getNodeFromPoint(self.center), graph.getNodeFromPoint(sheepToChase.center))
+        
+        # Once a path is found, move along that path
+        if (len(self.pathToSheep) > 0 and self.isSearching == True):
+            if (graph.getNodeFromPoint(self.center) == self.pathToSheep[0]):
+                self.pathToSheep.pop(0)
+                if (len(self.pathToSheep) > 0):
+                    self.velocity = (self.pathToSheep[0].center - self.center).normalize()
+        else:
+            self.velocity = Vector(0,0)
+            self.isSearching = False
+               
 
     # draws the dog and its velocity line
     def draw(self, screen):

@@ -111,10 +111,24 @@ class Graph():
 		""" Breadth Search """
 		print("BREADTH-FIRST")
 		self.reset()
+		toVisit = []
 
 		# TODO: Add your breadth-first code here!
-
+		toVisit.append(start)
+		while (len(toVisit) > 0):
+			currentNode = toVisit[0]
+			currentNode.isExplored = True
+			toVisit.pop(0)
+			currentNode.isVisited = True
+			for nextNode in currentNode.neighbors:
+				if  (nextNode.isVisited == False):
+					toVisit.append(nextNode)
+					nextNode.isVisited = True
+					nextNode.backNode = currentNode
+					if (nextNode == end):
+						return self.buildPath(nextNode)
 		return []
+
 
 	def findPath_Djikstra(self, start, end):
 		""" Djikstra's Search """
@@ -122,7 +136,30 @@ class Graph():
 		self.reset()		
 
 		# TODO: Add your Djikstra code here!
+		start.isVisited = True
+		start.cost = 0
+		toVisit = []
+		toVisit.append(start)
 
+		while (len(toVisit) > 0):
+			currentNode = toVisit[0]
+			currentNode.isExplored = True
+			toVisit.pop(0)
+			if (currentNode == end):
+				return self.buildPath(end)
+			for nextNode in currentNode.neighbors:
+				currDistance = (nextNode.center - currentNode.center).length()
+				if (nextNode.isVisited == False):
+					nextNode.isVisited = True
+					nextNode.cost = currDistance + currentNode.cost
+					nextNode.backNode = currentNode
+					toVisit.append(nextNode)
+					toVisit = sorted(toVisit, key=lambda node: node.cost)
+
+				else:
+					if (currDistance + currentNode.cost < nextNode.cost):
+						nextNode.cost = currDistance + currentNode.cost
+						nextNode.backNode = currentNode	
 		return []
 
 	def findPath_AStar(self, start, end):
@@ -140,7 +177,30 @@ class Graph():
 		self.reset()
 
 		# TODO: Add your Best-first code here!
+		start.isVisited = True
+		start.costToEnd = (end.center - start.center).length()
+		toVisit = []
+		toVisit.append(start)
 
+		while (len(toVisit) > 0):
+			currentNode = toVisit[0]
+			currentNode.isExplored = True
+			toVisit.pop(0)
+			if (currentNode == end):
+				return self.buildPath(end)
+			for nextNode in currentNode.neighbors:
+				currDistance = (nextNode.center - currentNode.center).length()
+				if (nextNode.isVisited == False):
+					nextNode.isVisited = True
+					nextNode.costToEnd = (end.center + nextNode.center).length()
+					nextNode.backNode = currentNode
+					toVisit.append(nextNode)
+					toVisit = sorted(toVisit, key=lambda node: node.cost)
+
+				else:
+					if (currDistance + currentNode.cost < nextNode.cost):
+						nextNode.cost = currDistance + currentNode.cost
+						nextNode.backNode = currentNode	
 		return []
 
 	def draw(self, screen):

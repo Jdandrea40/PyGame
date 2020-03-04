@@ -10,7 +10,7 @@ class Agent(object):
     # Object stat initializer
     def __init__(self, image, position, size, color, speed, angularSpeed):
         self.position = position
-        self.currentSpeed = 1
+        self.currentSpeed = speed
         self.maxSpeed = speed
         self.size = Vector(size.x, size.y)
         self.image = image  
