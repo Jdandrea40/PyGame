@@ -19,11 +19,12 @@ class Sheep(Agent):
         self.neighbors = []
 
         self.forces = Vector(0,0)
-        self.dog = Vector(0,0)
+        self.dogForce = Vector(0,0)
         self.alignment = Vector(0,0)
         self.cohesion = Vector(0,0)
         self.separation = Vector(0,0)
         self.bounds = Vector(0,0)
+        self.obsVector = Vector(0,0)
         
         #self.linearAccel = 0
         #self.angularVel = Vector(0,0)
@@ -56,16 +57,18 @@ class Sheep(Agent):
     def update(self, bounds, graph, dog, herd, gates):
         # initialize the starting force to 0
         self.forces = Vector(0,0)
+        self.obsVector = Vector(0,0)
         self.calcTrackingVelocity(dog)
 
         # gets the vector to the dog and uses it to check its closeness
         vectToPlayer = dog.position - self.position
 
         if (self.isPlayerClose(dog) == True):
-            self.dog = vectToPlayer * -1
+            self.dogForce = vectToPlayer * -1
         else:
-            self.dog = Vector(0,0)
+            self.dogForce = Vector(0,0)
 
+        self.dogForce = self.dogForce.normalize()
         # gets the total numbers of neighbors for neighbor alignment
         totalNeighbors = len(self.neighbors)
 
@@ -77,12 +80,12 @@ class Sheep(Agent):
                 self.cohesion += sheep.position
                 self.separation += (sheep.position - self.position)
 
-
             self.sheepAlignment(totalNeighbors)
             self.sheepCohesion(totalNeighbors)
             self.sheepSeparation(totalNeighbors)
+    
 
-        if (self.position - Vector(0,self.position.y)).length() < Constants.SHEEP_BOUNDARY_RADIUS:
+        if ((self.position - Vector(0,self.position.y)).length() < Constants.SHEEP_BOUNDARY_RADIUS):
             self.bounds.x = 1
         elif (Vector(Constants.WORLD_WIDTH, self.position.y) - Vector(self.position.x + self.rect.w, self.position.y)).length() < Constants.SHEEP_BOUNDARY_RADIUS:
             self.bounds.x = -1
@@ -96,14 +99,21 @@ class Sheep(Agent):
             self.bounds.y = 0
         self.bounds = self.bounds.normalize()
 
+        for o in graph.obstacles:
+            if (o.center - self.center).length() < Constants.SHEEP_OBSTACLE_RADIUS:
+                self.obsVector += (self.center - o.center)               
+        self.obsVector = self.obsVector.normalize()
+
         self.forces += self.alignment * Constants.SHEEP_ALIGNMENT_WEIGHT \
             + self.cohesion * Constants.SHEEP_COHESION_WEIGHT \
                 + self.separation * Constants.SHEEP_SEPARATION_WEIGHT \
-                    + self.bounds * Constants.SHEEP_BOUNDARY_RADIUS \
-                        + self.dog * Constants.SHEEP_DOG_INFLUENCE_WEIGHT
+                    + self.bounds * Constants.SHEEP_BOUNDARY_INFLUENCE_WEIGHT \
+                        + self.dogForce * Constants.SHEEP_DOG_INFLUENCE_WEIGHT \
+                         + self.obsVector * Constants.SHEEP_OBSTACLE_INFLUENCE_WEIGHT
         
-
+        self.forces *= Constants.SHEEP_ANGULAR_SPEED
         self.updateVelocity(self.forces)
+
         super().update(bounds, graph, herd, gates)
 
     def sheepAlignment(self, totNeighs):
@@ -147,7 +157,7 @@ class Sheep(Agent):
         
         # dog force affect line drawing
         if (self.dogForceLine == True):
-            drawDogLine = pygame.draw.line(screen,[0,0,255],(self.center.x,self.center.y),(self.center.x + self.dog.x, self.center.y + self.dog.y),1)
+            drawDogLine = pygame.draw.line(screen,[0,0,255],(self.center.x,self.center.y),(self.center.x + self.dogForce.x, self.center.y + self.dogForce.y),1)
             pygame.display.update(drawDogLine)
         
         # bound force line drawing

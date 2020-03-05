@@ -177,6 +177,7 @@ class Graph():
 
 		while(len(toVisit) > 0):
 			currentNode = toVisit[0]
+			currentNode.isExplored = True
 			toVisit.pop(0)
 			if  (currentNode  == end):
 				return self.buildPath(end)
