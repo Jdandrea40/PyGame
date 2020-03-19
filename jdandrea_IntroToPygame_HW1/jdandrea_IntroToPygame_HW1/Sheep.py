@@ -97,22 +97,25 @@ class Sheep(Agent):
             self.bounds.y = -1
         else:
             self.bounds.y = 0
-        self.bounds = self.bounds.normalize()
+       #self.bounds = self.bounds.normalize()
 
         for o in graph.obstacles:
             if (o.center - self.center).length() < Constants.SHEEP_OBSTACLE_RADIUS:
                 self.obsVector += (self.center - o.center)               
-        self.obsVector = self.obsVector.normalize()
+        #self.obsVector = self.obsVector.normalize()
 
         self.forces += self.alignment * Constants.SHEEP_ALIGNMENT_WEIGHT \
             + self.cohesion * Constants.SHEEP_COHESION_WEIGHT \
                 + self.separation * Constants.SHEEP_SEPARATION_WEIGHT \
                     + self.bounds * Constants.SHEEP_BOUNDARY_INFLUENCE_WEIGHT \
                         + self.dogForce * Constants.SHEEP_DOG_INFLUENCE_WEIGHT \
-                         + self.obsVector * Constants.SHEEP_OBSTACLE_INFLUENCE_WEIGHT
+                            + self.obsVector * Constants.SHEEP_OBSTACLE_INFLUENCE_WEIGHT
         
-        self.forces *= Constants.SHEEP_ANGULAR_SPEED
+        angVel = Vector(0,0)
+        
         self.updateVelocity(self.forces)
+        self.velocity = (self.velocity  - self.forces) * Constants.SHEEP_ANGULAR_SPEED
+        #self.velocity *= Constants.SHEEP_ANGULAR_SPEED
 
         super().update(bounds, graph, herd, gates)
 
