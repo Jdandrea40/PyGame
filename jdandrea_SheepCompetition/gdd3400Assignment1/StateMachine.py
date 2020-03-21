@@ -44,7 +44,7 @@ class State:
 	def enter(self):
 		""" Enter this state, perform any setup required """
 		print("Entering " + self.__class__.__name__)
-		
+				
 	def exit(self):
 		""" Exit this state, perform any shutdown or cleanup required """
 		print("Exiting " + self.__class__.__name__)
@@ -90,15 +90,35 @@ class CalcChaseOffset(State):
 		super().update(gameState)
 		dog = gameState.getDog()
 		sheep = dog.getTargetSheep()
+		graph = gameState.getGraph()
 		pen = gameState.getPenBounds()
 		gate = pen[0]
 
 		gateCent = Vector(gate.centerx, gate.centery)
+
 		sheepVect = sheep.center - gateCent
 		sheepVect = sheepVect.normalize()
 		sheepVect = sheepVect * (Constants.SHEEP_MIN_FLEE_DIST * (2/3))
+
+		pointToMove = sheep.center + sheepVect
+
+		# Keeps offset inbounds of the screen
+		if (pointToMove.x > Constants.WORLD_WIDTH):
+			pointToMove.x = Constants.WORLD_WIDTH
+		if (pointToMove.x < 0):
+			pointToMove.x = 0
+		if (pointToMove.y > Constants.WORLD_HEIGHT):
+			pointToMove.y = Constants.WORLD_HEIGHT
+		if (pointToMove.y < 0):
+			pointToMove.y = 0
 		
-		dog.calculatePathToNewTarget(sheep.center + sheepVect)
+		# checks if offset is inside an obstacle
+		if (graph.getNodeFromPoint(pointToMove).isWalkable == False):
+			while (graph.getNodeFromPoint(pointToMove).isWalkable == False):
+				pointToMove.x += Constants.GRID_SIZE
+				pointToMove.y += Constants.GRID_SIZE
+
+		dog.calculatePathToNewTarget(pointToMove)
 
 		return Chase()
 
