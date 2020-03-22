@@ -62,9 +62,12 @@ class Idle(State):
 
 	def update(self, gameState):
 		super().update(gameState)
-		
+		herd = gameState.getHerd()
+		if (herd > 0):
+			return FindSheepState()
 		# Do nothing
-		return Idle()
+		else:
+			return Idle()
 			   
 class FindSheepState(State):
 	""" This is an example state that simply picks the first sheep to target """
@@ -73,13 +76,22 @@ class FindSheepState(State):
 		""" Update this state using the current gameState """
 		super().update(gameState)
 		dog = gameState.getDog()
-
-		# Pick a random sheep
-		dog.setTargetSheep(gameState.getHerd()[0])
 		herd = gameState.getHerd()
-		# You could add some logic here to pick which state to go to next
-		# depending on the gameState
+		pen = gameState.getPenBounds()
+		gate = pen[0]
+
+		# A check to determine if there are more sheep to 
 		if (len(herd) > 0):
+			gateCenter = Vector(gate.centerx, gate.centery)				
+			furthestSheepDist = 0
+			if (dog.getTargetSheep() == None or dog.getTargetSheep() not in herd):
+				# Pick the furthest sheep in the herd
+				for x in herd:
+					if (x.center - gateCenter).length() > furthestSheepDist:
+						furthestSheep = x
+						furthestSheepDist = (x.center - gateCenter).length()
+				dog.setTargetSheep(furthestSheep)
+
 			return CalcChaseOffset()
 		else:
 			return Idle()
@@ -88,18 +100,23 @@ class FindSheepState(State):
 class CalcChaseOffset(State):
 	def update(self, gameState):
 		super().update(gameState)
+
+		# grabbing all necessary data
 		dog = gameState.getDog()
 		sheep = dog.getTargetSheep()
 		graph = gameState.getGraph()
 		pen = gameState.getPenBounds()
 		gate = pen[0]
 
+		# turns the center of the gate into a Vector for later Maths
 		gateCent = Vector(gate.centerx, gate.centery)
 
+		# calculates the line to chase the sheep back to the gate
 		sheepVect = sheep.center - gateCent
 		sheepVect = sheepVect.normalize()
-		sheepVect = sheepVect * (Constants.SHEEP_MIN_FLEE_DIST * (2/3))
+		sheepVect = sheepVect * (Constants.SHEEP_MIN_FLEE_DIST * (.7))
 
+		# the offset point for the dog to move to
 		pointToMove = sheep.center + sheepVect
 
 		# Keeps offset inbounds of the screen
@@ -113,18 +130,24 @@ class CalcChaseOffset(State):
 			pointToMove.y = 0
 		
 		# checks if offset is inside an obstacle
+		# and reevaluates the new point
 		if (graph.getNodeFromPoint(pointToMove).isWalkable == False):
 			while (graph.getNodeFromPoint(pointToMove).isWalkable == False):
 				pointToMove.x += Constants.GRID_SIZE
 				pointToMove.y += Constants.GRID_SIZE
 
+		# tells the dog where to move to
 		dog.calculatePathToNewTarget(pointToMove)
 
+		# Chase State Swap
 		return Chase()
 
 class Chase(State):
 	def update(self, gameState):
 		super().update(gameState)
+
+		# moves the dog until the path has been finished
+		# then chages to FindSheepState
 		dog = gameState.getDog() 
 		if (dog.getPathLength() < 1):
 			return FindSheepState()
